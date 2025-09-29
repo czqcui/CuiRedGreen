@@ -1,0 +1,45 @@
+# cloudbuild.yaml
+steps:
+  # 构建 Docker 镜像
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+      - '-t'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+  
+  # 推送到 Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'push'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+
+  # 部署到 Cloud Run（可选）
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'cui-red-green'
+      - '--image'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+      - '--region'
+      - 'asia-east1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+# 镜像标签
+images:
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:latest'
+
+# 超时设置
+timeout: 1800s
+
+# 日志选项
+options:
+  logging: CLOUD_LOGGING_ONLY
