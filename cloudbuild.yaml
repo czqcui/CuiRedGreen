@@ -11,6 +11,14 @@ steps:
       - '-f'
       - 'Dockerfile'
       - '.'
+
+# 获取项目编号
+PROJECT_ID="daytrader-dev-security-tj0n"
+
+# 授予 Artifact Registry 写入权限
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')@cloudbuild.gserviceaccount.com" \
+    --role="roles/artifactregistry.writer"
   
   # 推送到 Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
