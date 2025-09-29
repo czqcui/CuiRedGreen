@@ -9,8 +9,8 @@ COPY src ./src
 # 构建可执行JAR（跳过测试）
 RUN mvn clean package -DskipTests
 
-# 第二阶段：创建轻量级运行环境
-FROM registry.cn-hangzhou.aliyuncs.com/library/eclipse-temurin:17-jre
+# 第二阶段：（使用 Google 镜像仓库）：
+FROM gcr.io/distroless/java17:nonroot
 WORKDIR /app
 
 # 从构建阶段复制生成的JAR文件（使用Spring Boot默认命名）
