@@ -48,6 +48,8 @@ steps:
       - '--timeout=300'
       - '--concurrency=80'
       - '--max-instances=100'
+      - '--project'
+      - 'daytrader-dev-services-le2m'
 
     id: 'deploy'
     waitFor: ['docker-push']
