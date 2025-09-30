@@ -10,7 +10,7 @@ public class testgr {
 	
 	@GetMapping("test")
 	public String abc() {
-		return "我是来测试的，提交了第4次ＧＩＴ";
+		return "我是来测试的，提交了第5次ＧＩＴ";
 	}
 
 }
