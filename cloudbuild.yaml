@@ -30,12 +30,12 @@ steps:
     id: 'docker-push'
     waitFor: ['docker-build']
 
-  # 步骤4：部署到 Cloud Run（使用手动成功的配置）
+  # 步骤4：部署到 Cloud Run（修复参数格式）
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'
       - 'deploy'
-      - 'cui-red-green21'  # 使用您手动成功的服务名
+      - 'cui-red-green1'
       - '--image'
       - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
       - '--region'
@@ -43,13 +43,17 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-      - '--memory=512Mi'           # 添加内存配置
-      - '--cpu=1000m'              # 添加CPU配置
-      - '--timeout=300'            # 超时时间
-      - '--concurrency=80'         # 并发配置
-      - '--max-instances=100'      # 最大实例数
-      - '--set-startup-probe'      # 启动探针
-      - 'port=8080,timeout=240s,period=240s,failure-threshold=1'
+      - '--memory=512Mi'
+      - '--cpu=1000m'
+      - '--timeout=300'
+      - '--concurrency=80'
+      - '--max-instances=100'
+      # 修复启动探针参数
+      - '--startup-probe'
+      - 'tcp:8080'
+      - '--startup-probe-timeout=240'
+      - '--startup-probe-period=240'
+      - '--startup-probe-failure-threshold=1'
     id: 'deploy'
     waitFor: ['docker-push']
 
