@@ -54,6 +54,20 @@ steps:
     id: 'deploy'
     waitFor: ['docker-push']
 
+      # 新增步骤：设置公开访问权限
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'services'
+      - 'add-iam-policy-binding'
+      - 'cui-red-green21'
+      - '--region=asia-east1'
+      - '--project=daytrader-dev-services-le2m'
+      - '--member=allUsers'
+      - '--role=roles/run.invoker'
+    id: 'set-public-access'
+    waitFor: ['deploy']
+
 # 镜像标签
 images:
   - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
