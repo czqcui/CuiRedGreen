@@ -1,49 +1,55 @@
-# cloudbuild.yaml
+# cloudbuild.yaml - 完整正确版本
 steps:
-  # 构建 Docker 镜像
+  # 步骤1：配置 Docker 认证
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: 
+      - 'auth'
+      - 'configure-docker'
+      - 'asia-east1-docker.pkg.dev'
+    id: 'docker-auth'
+
+  # 步骤2：构建 Docker 镜像
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
-      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
       - '-t'
-      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:latest'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:latest'
       - '-f'
       - 'Dockerfile'
       - '.'
-
-# 获取项目编号
-PROJECT_ID="daytrader-dev-security-tj0n"
-
-# 授予 Artifact Registry 写入权限
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')@cloudbuild.gserviceaccount.com" \
-    --role="roles/artifactregistry.writer"
+    id: 'docker-build'
+    waitFor: ['docker-auth']
   
-  # 推送到 Artifact Registry
+  # 步骤3：推送到 Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: 
       - 'push'
-      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+    id: 'docker-push'
+    waitFor: ['docker-build']
 
-  # 部署到 Cloud Run（可选）
+  # 步骤4：部署到 Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'
       - 'deploy'
       - 'cui-red-green'
       - '--image'
-      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
       - '--region'
       - 'asia-east1'
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
+    id: 'deploy'
+    waitFor: ['docker-push']
 
 # 镜像标签
 images:
-  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:$COMMIT_SHA'
-  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tjon/czqtestar/cui-red-green:latest'
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:latest'
 
 # 超时设置
 timeout: 1800s
