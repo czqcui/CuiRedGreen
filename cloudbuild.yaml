@@ -48,12 +48,7 @@ steps:
       - '--timeout=300'
       - '--concurrency=80'
       - '--max-instances=100'
-      # 修复启动探针参数
-      - '--startup-probe'
-      - 'tcp:8080'
-      - '--startup-probe-timeout=240'
-      - '--startup-probe-period=240'
-      - '--startup-probe-failure-threshold=1'
+
     id: 'deploy'
     waitFor: ['docker-push']
 
