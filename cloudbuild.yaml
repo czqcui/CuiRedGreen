@@ -35,7 +35,7 @@ steps:
     args:
       - 'run'
       - 'deploy'
-      - 'cui-red-green1'  # 使用您手动成功的服务名
+      - 'cui-red-green21'  # 使用您手动成功的服务名
       - '--image'
       - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
       - '--region'
