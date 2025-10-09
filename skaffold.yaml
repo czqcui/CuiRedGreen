@@ -1,8 +1,7 @@
-# skaffold.yaml
+# skaffold.yaml - 修复版本
 apiVersion: skaffold/v4beta7
 kind: Config
 manifests:
   rawYaml:
-    - cloudrun-manifest.yaml  # 我们将创建这个文件
-deploy:
-  kubectl: {}
+    - cloudrun-manifest.yaml
+# 移除 kubectl 配置，因为 Cloud Deploy 会自动处理 Cloud Run
