@@ -1,4 +1,4 @@
-# clouddeploy.yaml
+# clouddeploy.yaml - 修复版本
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
@@ -6,9 +6,9 @@ metadata:
 description: "CUI Red-Green 应用部署流水线"
 serialPipeline:
   stages:
-    - targetId: test
-      profiles: []  # 可以在这里指定环境特定的配置
-    - targetId: production
+    - targetId: cui-test  # 改为 cui-test
+      profiles: []
+    - targetId: cui-production  # 改为 cui-production
       profiles: []
 ---
 apiVersion: deploy.cloud.google.com/v1
@@ -26,4 +26,4 @@ metadata:
 description: "生产环境"
 run:
   location: projects/daytrader-dev-services-le2m/locations/asia-east1
-requireApproval: true  # 生产环境需要手动审批
+requireApproval: true
