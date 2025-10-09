@@ -1,0 +1,58 @@
+# cloudbuild.yaml - 使用 Cloud Deploy 版本
+steps:
+  # 步骤1：配置 Docker 认证
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: 
+      - 'auth'
+      - 'configure-docker'
+      - 'asia-east1-docker.pkg.dev'
+    id: 'docker-auth'
+
+  # 步骤2：构建 Docker 镜像
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+      - '-t'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+    id: 'docker-build'
+    waitFor: ['docker-auth']
+  
+  # 步骤3：推送到 Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'push'
+      - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+    id: 'docker-push'
+    waitFor: ['docker-build']
+
+  # 步骤4：创建 Cloud Deploy 发布
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'deploy'
+      - 'releases'
+      - 'create'
+      - 'release-$COMMIT_SHA-$(date +%s)'  # 唯一发布名称
+      - '--delivery-pipeline=cui-red-green-pipeline'
+      - '--region=asia-east1'
+      - '--project=daytrader-dev-services-le2m'
+      - '--images=asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+      - '--source=.'
+    id: 'create-release'
+    waitFor: ['docker-push']
+
+# 镜像标签
+images:
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
+  - 'asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:latest'
+
+# 超时设置
+timeout: 1800s
+
+# 日志选项
+options:
+  logging: CLOUD_LOGGING_ONLY
