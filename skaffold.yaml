@@ -1,0 +1,8 @@
+# skaffold.yaml
+apiVersion: skaffold/v4beta7
+kind: Config
+manifests:
+  rawYaml:
+    - k8s-manifest.yaml  # 我们将创建这个文件
+deploy:
+  kubectl: {}

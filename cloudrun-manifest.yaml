@@ -1,0 +1,25 @@
+# k8s-manifest.yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: cui-red-green-service
+  annotations:
+    run.googleapis.com/launch-stage: BETA
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '100'
+        run.googleapis.com/cpu-throttling: 'false'
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+        - image: IMAGE_PLACEHOLDER  # Cloud Deploy 会自动替换这个值
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+  traffic:
+    - percent: 100
+      latestRevision: true
