@@ -1,4 +1,4 @@
-# cloudbuild.yaml - 最终修复版本
+# cloudbuild.yaml 
 steps:
   # 步骤1：配置 Docker 认证
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -30,7 +30,7 @@ steps:
     id: 'docker-push'
     waitFor: ['docker-build']
 
-  # 步骤4：创建 Cloud Deploy 发布（修复版本）
+  # 步骤4：创建 Cloud Deploy 发布
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'deploy'
