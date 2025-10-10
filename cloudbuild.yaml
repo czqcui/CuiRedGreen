@@ -39,7 +39,7 @@ steps:
       - 'release-$COMMIT_SHA-$BUILD_ID'  # 使用 BUILD_ID 确保唯一性
       - '--delivery-pipeline=cui-test-red-green-pipeline'
       - '--region=asia-east1'
-      - '--project=daytrader-dev-services-le2m'
+      - '--project=daytrader-build-e429'
       - '--images=cui-red-green=asia-east1-docker.pkg.dev/daytrader-dev-security-tj0n/test-cui/cui-red-green:$COMMIT_SHA'
       - '--source=.'
     id: 'create-release'
