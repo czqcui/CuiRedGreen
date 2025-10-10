@@ -1,4 +1,4 @@
-# clouddeploy.yaml - 修复版本
+# clouddeploy.yaml 
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
@@ -10,9 +10,9 @@ description: "CUI Red-Green 应用部署流水线"
 
 serialPipeline:
   stages:
-    - targetId: cui-test  # 改为 cui-test
+    - targetId: cui-test  
       profiles: []
-    - targetId: cui-production  # 改为 cui-production
+    - targetId: cui-production  
       profiles: []
 ---
 apiVersion: deploy.cloud.google.com/v1
