@@ -4,6 +4,9 @@ kind: DeliveryPipeline
 metadata:
   name: cui-test-red-green-pipeline
 description: "CUI Red-Green 应用部署流水线"
+  annotations:
+    # 指定使用现有存储桶
+    clouddeploy.google.com/storage-bucket: "daytrader-build-e429-cloud-deploy-staging"
 serialPipeline:
   stages:
     - targetId: cui-test  # 改为 cui-test
