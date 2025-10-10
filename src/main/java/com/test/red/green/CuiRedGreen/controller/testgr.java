@@ -10,7 +10,7 @@ public class testgr {
 	
 	@GetMapping("test")
 	public String abc() {
-		return "我是来测试的，你敢信这是第7次成功了（17：51）~~~~cloud deploy弄的~13：23";
+		return "我是来测试的，你敢信这是第7次成功了（17：51）~~~~cloud deploy弄的~15：22";
 	}
 
 }
